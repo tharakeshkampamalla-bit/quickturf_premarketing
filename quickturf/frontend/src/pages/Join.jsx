@@ -1,24 +1,45 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
-import axios from 'axios'
-import { PlayerIcon, TurfIcon, InvestorsIcon, TeamIcon } from '../components/IndustryIcons'
+import api from '../api'
+import { PlayerIcon, TurfIcon, TeamIcon } from '../components/IndustryIcons'
 
-/* ── ICON COMPONENTS ────────────────────────────── */
-// Icons are now imported from IndustryIcons.jsx for consistent styling
-
-const ROLES = ['Player', 'Turf Owner', 'Investor', 'Collaborator']
+const ROLES = ['Player', 'Turf Owner', 'Collaborator']
 
 const ROLE_META = {
   Player:       { icon: PlayerIcon, accent: '#00ff87', desc: 'Get early access and book turfs instantly the day we launch.', tag: 'PLAYER' },
-  'Turf Owner': { icon: TurfIcon, accent: '#4488ff', desc: 'List your turf and start receiving automated bookings from day one.', tag: 'TURF OWNER' },
-  Investor:     { icon: InvestorsIcon, accent: '#ffaa00', desc: 'Explore investment and strategic partnership opportunities with us.', tag: 'INVESTOR' },
-  Collaborator: { icon: TeamIcon, accent: '#cc88ff', desc: 'Join our team or collaborate on building the QuickTurf platform.', tag: 'COLLABORATOR' },
+  'Turf Owner': { icon: TurfIcon,   accent: '#4488ff', desc: 'List your turf and start receiving automated bookings from day one.', tag: 'TURF OWNER' },
+  Collaborator: { icon: TeamIcon,   accent: '#cc88ff', desc: 'Join our team or collaborate on building the QuickTurf platform.', tag: 'COLLABORATOR' },
+}
+
+/* ── Field is defined OUTSIDE Join so it never remounts on re-render ── */
+function Field({ label, name, type = 'text', placeholder, required, value, onChange, focusedField, onFocus, onBlur, accent, children }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <label style={{ fontFamily: 'JetBrains Mono', fontSize: '0.6rem', color: focusedField === name ? accent : 'rgba(240,240,240,0.35)', letterSpacing: '0.12em', textTransform: 'uppercase', transition: 'color 0.2s' }}>
+        {label}{required ? ' *' : ''}
+      </label>
+      {children || (
+        <input
+          name={name}
+          type={type}
+          value={value}
+          onChange={onChange}
+          required={required}
+          placeholder={placeholder}
+          className="input-field"
+          onFocus={() => onFocus(name)}
+          onBlur={onBlur}
+          style={{ '--focus-accent': accent }}
+        />
+      )}
+    </div>
+  )
 }
 
 export default function Join() {
   const [searchParams] = useSearchParams()
   const initialRole = (searchParams.get('role') || 'Player').replace(/\+/g, ' ')
-  const [form, setForm] = useState({ name: '', email: '', phone: '', city: '', role: initialRole, turfName: '', location: '', investmentInterest: '' })
+  const [form, setForm] = useState({ name: '', email: '', phone: '', city: '', role: initialRole, turfName: '', location: '' })
   const [status, setStatus] = useState('idle')
   const [errorMsg, setErrorMsg] = useState('')
   const [focusedField, setFocusedField] = useState(null)
@@ -28,13 +49,13 @@ export default function Join() {
     setForm(f => ({ ...f, role: r }))
   }, [searchParams])
 
-  const set = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }))
+  const handleChange = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }))
 
   const handleSubmit = async e => {
     e.preventDefault()
     setStatus('loading'); setErrorMsg('')
     try {
-      await axios.post('/api/leads', form)
+      await api.post('/api/leads', form)
       setStatus('success')
     } catch (err) {
       setStatus('error')
@@ -44,6 +65,9 @@ export default function Join() {
 
   const meta = ROLE_META[form.role] || ROLE_META.Player
   const { accent } = meta
+
+  /* shared props passed down to Field */
+  const fieldProps = { focusedField, onFocus: setFocusedField, onBlur: () => setFocusedField(null), accent, onChange: handleChange }
 
   if (status === 'success') {
     return (
@@ -58,7 +82,7 @@ export default function Join() {
           <div style={{ fontFamily: 'JetBrains Mono', fontSize: '0.6rem', color: accent, letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 16 }}>Registration Complete</div>
           <h2 style={{ fontFamily: 'Outfit', fontWeight: 800, fontSize: '3rem', letterSpacing: '-0.035em', color: 'var(--c-text)', marginBottom: 16, lineHeight: 1.05 }}>You're in!</h2>
           <p style={{ fontFamily: 'Outfit', fontSize: '1rem', color: 'rgba(240,240,240,0.5)', lineHeight: 1.75, marginBottom: 40 }}>
-            Thanks, <span style={{ color: 'var(--c-text)', fontWeight: 600 }}>{form.name}</span>.
+            Thanks, <span style={{ color: 'var(--c-text)', fontWeight: 600 }}>{form.name}</span>.{' '}
             We'll reach out at <span style={{ color: 'rgba(240,240,240,0.75)' }}>{form.email}</span> when QuickTurf launches in your city.
           </p>
           <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
@@ -70,29 +94,15 @@ export default function Join() {
     )
   }
 
-  const Field = ({ label, name, type = 'text', placeholder, required, children }) => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-      <label style={{ fontFamily: 'JetBrains Mono', fontSize: '0.6rem', color: focusedField === name ? accent : 'rgba(240,240,240,0.35)', letterSpacing: '0.12em', textTransform: 'uppercase', transition: 'color 0.2s' }}>{label}{required ? ' *' : ''}</label>
-      {children || (
-        <input name={name} type={type} value={form[name]} onChange={set} required={required} placeholder={placeholder}
-          className="input-field"
-          onFocus={() => setFocusedField(name)}
-          onBlur={() => setFocusedField(null)}
-          style={{ '--focus-accent': accent }}
-        />
-      )}
-    </div>
-  )
-
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--c-bg)', paddingTop: 80, position: 'relative', overflow: 'hidden' }}>
-      {/* Background effects */}
+    <div style={{ minHeight: '100vh', background: 'var(--c-bg)', paddingTop: 72, position: 'relative', overflow: 'hidden' }}>
+      {/* Background */}
       <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: 700, height: 400, background: `radial-gradient(ellipse, ${accent}08 0%, transparent 65%)`, pointerEvents: 'none' }} />
       <div style={{ position: 'absolute', inset: 0 }} className="dot-grid" />
 
       <div style={{ maxWidth: 1100, margin: '0 auto', padding: '60px 28px 80px', position: 'relative', zIndex: 2, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 80, alignItems: 'start' }}>
 
-        {/* Left: info panel */}
+        {/* Left info panel */}
         <div style={{ paddingTop: 24, position: 'sticky', top: 100 }}>
           <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontFamily: 'Outfit', fontSize: '0.82rem', color: 'rgba(240,240,240,0.38)', textDecoration: 'none', marginBottom: 48, transition: 'color 0.2s' }}
             onMouseEnter={e => e.currentTarget.style.color = 'rgba(240,240,240,0.75)'}
@@ -111,8 +121,7 @@ export default function Join() {
             Register your interest. We'll notify you as soon as QuickTurf launches in your city.
           </p>
 
-          {/* Role feature list */}
-          <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${accent}25`, borderRadius: 12, padding: '28px 28px' }}>
+          <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${accent}25`, borderRadius: 12, padding: '28px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
               <div style={{ width: 32, height: 32 }}>
                 <meta.icon accent={accent} size={32} />
@@ -122,7 +131,6 @@ export default function Join() {
             <p style={{ fontFamily: 'Outfit', fontSize: '0.88rem', color: 'rgba(240,240,240,0.5)', lineHeight: 1.7 }}>{meta.desc}</p>
           </div>
 
-          {/* Trust signals */}
           <div style={{ display: 'flex', gap: 20, marginTop: 32, flexWrap: 'wrap' }}>
             {['No spam', 'No credit card', 'Free forever'].map(t => (
               <div key={t} style={{ display: 'flex', alignItems: 'center', gap: 7, fontFamily: 'Outfit', fontSize: '0.78rem', color: 'rgba(240,240,240,0.3)' }}>
@@ -133,10 +141,11 @@ export default function Join() {
           </div>
         </div>
 
-        {/* Right: form */}
+        {/* Right form panel */}
         <div style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 16, padding: '44px 40px' }}>
+
           {/* Role tabs */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 6, marginBottom: 36, background: 'rgba(255,255,255,0.03)', borderRadius: 10, padding: 6 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 6, marginBottom: 36, background: 'rgba(255,255,255,0.03)', borderRadius: 10, padding: 6 }}>
             {ROLES.map(r => {
               const rm = ROLE_META[r]
               const isActive = form.role === r
@@ -146,7 +155,7 @@ export default function Join() {
                   <div style={{ width: 20, height: 20 }}>
                     <rm.icon accent={isActive ? rm.accent : 'rgba(240,240,240,0.3)'} size={20} />
                   </div>
-                  <span style={{ fontSize: '0.68rem' }}>{r === 'Turf Owner' ? 'Owner' : r === 'Collaborator' ? 'Collab.' : r}</span>
+                  <span style={{ fontSize: '0.68rem' }}>{r === 'Turf Owner' ? 'Owner' : r}</span>
                 </button>
               )
             })}
@@ -154,29 +163,17 @@ export default function Join() {
 
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-              <Field label="Full Name" name="name" placeholder="Rahul Sharma" required />
-              <Field label="Phone" name="phone" placeholder="+91 98765 43210" required />
+              <Field label="Full Name"  name="name"  placeholder="Rahul Sharma"       required value={form.name}  {...fieldProps} />
+              <Field label="Phone"      name="phone" placeholder="+91 98765 43210"    required value={form.phone} {...fieldProps} />
             </div>
-            <Field label="Email Address" name="email" type="email" placeholder="rahul@example.com" required />
-            <Field label="City" name="city" placeholder="Hyderabad" required />
+            <Field label="Email Address" name="email" type="email" placeholder="rahul@example.com" required value={form.email} {...fieldProps} />
+            <Field label="City"          name="city"  placeholder="Hyderabad"          required value={form.city}  {...fieldProps} />
 
             {form.role === 'Turf Owner' && (
               <div style={{ borderTop: `1px solid ${accent}18`, paddingTop: 20, display: 'flex', flexDirection: 'column', gap: 16 }}>
                 <div style={{ fontFamily: 'JetBrains Mono', fontSize: '0.6rem', color: accent, letterSpacing: '0.12em', textTransform: 'uppercase' }}>Turf Details</div>
-                <Field label="Turf Name" name="turfName" placeholder="City Sports Arena" required />
-                <Field label="Turf Location" name="location" placeholder="Banjara Hills, Hyderabad" required />
-              </div>
-            )}
-
-            {form.role === 'Investor' && (
-              <div style={{ borderTop: `1px solid ${accent}18`, paddingTop: 20, display: 'flex', flexDirection: 'column', gap: 16 }}>
-                <div style={{ fontFamily: 'JetBrains Mono', fontSize: '0.6rem', color: accent, letterSpacing: '0.12em', textTransform: 'uppercase' }}>Investment Interest (Optional)</div>
-                <Field label="Tell us about your interest">
-                  <textarea name="investmentInterest" value={form.investmentInterest} onChange={set}
-                    placeholder="e.g., Early-stage sports tech investor looking for Seed/Series A opportunities in Tier 1 cities..."
-                    rows={3} className="input-field" onFocus={() => setFocusedField('investmentInterest')} onBlur={() => setFocusedField(null)}
-                    style={{ resize: 'none' }} />
-                </Field>
+                <Field label="Turf Name"     name="turfName" placeholder="City Sports Arena"         required value={form.turfName} {...fieldProps} />
+                <Field label="Turf Location" name="location" placeholder="Banjara Hills, Hyderabad"  required value={form.location} {...fieldProps} />
               </div>
             )}
 
@@ -190,7 +187,7 @@ export default function Join() {
               style={{ marginTop: 8, padding: '16px 24px', background: accent, color: '#000', fontFamily: 'Outfit', fontWeight: 700, fontSize: '0.95rem', border: 'none', borderRadius: 8, cursor: status === 'loading' ? 'wait' : 'none', transition: 'all 0.2s', boxShadow: `0 0 28px ${accent}35`, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, opacity: status === 'loading' ? 0.7 : 1 }}>
               {status === 'loading' ? (
                 <>
-                  <svg style={{ animation: 'spin-slow 0.8s linear infinite' }} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <svg style={{ animation: 'spin-fast 0.7s linear infinite' }} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                     <circle cx="12" cy="12" r="10" strokeOpacity="0.2"/><path d="M12 2a10 10 0 0110 10" strokeLinecap="round"/>
                   </svg>
                   Registering...

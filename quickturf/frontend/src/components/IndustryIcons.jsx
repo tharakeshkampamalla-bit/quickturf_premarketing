@@ -1,158 +1,132 @@
 import React from 'react'
 
-function IconShell({ accent, size = 40, children }) {
-  return (
-    <div style={{
-      width: size,
-      height: size,
-      borderRadius: '50%',
-      background: `rgba(255,255,255,0.06)`,
-      border: `1px solid ${accent || 'rgba(255,255,255,0.2)'}`,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      boxShadow: `0 4px 20px rgba(0,0,0,0.15)`,
-      color: accent || '#00ff87'
-    }}>
-      {children}
-    </div>
-  )
-}
+/* ── All icons are clean stroke SVGs — no circle shells. ── */
 
-const IconStroke = ({ d, accent = '#00ff87' }) => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={accent} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-    <path d={d}/>
+const Svg = ({ accent, size, children }) => (
+  <svg
+    width={size} height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke={accent}
+    strokeWidth="1.9"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    {children}
   </svg>
 )
 
-export function SearchIcon({ accent = '#4488ff', size = 44 }) {
+/* How It Works icons */
+export function SearchIcon({ accent = '#4488ff', size = 22 }) {
   return (
-    <IconShell accent={accent} size={size}>
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={accent} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="11" cy="11" r="7"/>
-        <path d="m21 21-4.35-4.35"/>
-      </svg>
-    </IconShell>
+    <Svg accent={accent} size={size}>
+      <circle cx="11" cy="11" r="7"/>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </Svg>
   )
 }
 
-export function BookIcon({ accent = '#00ff87', size = 44 }) {
+export function BookIcon({ accent = '#00ff87', size = 22 }) {
   return (
-    <IconShell accent={accent} size={size}>
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={accent} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M19 21H5c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2h14c1.1 0 2 .9 2 2v14c0 1.1-.9 2-2 2Z"/>
-        <path d="M7 4v16M12 4v16M17 4v16"/>
-      </svg>
-    </IconShell>
+    <Svg accent={accent} size={size}>
+      <path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/>
+      <path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/>
+    </Svg>
   )
 }
 
-export function PlayIcon({ accent = '#ffaa00', size = 44 }) {
+export function PlayIcon({ accent = '#ffaa00', size = 22 }) {
   return (
-    <IconShell accent={accent} size={size}>
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={accent} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M8 5v14l11-7L8 5Z"/>
-      </svg>
-    </IconShell>
+    <Svg accent={accent} size={size}>
+      <polygon points="5 3 19 12 5 21 5 3"/>
+    </Svg>
   )
 }
 
-export function PlayerIcon({ accent = '#00ff87', size = 44 }) {
+/* Audience tab icons */
+export function PlayerIcon({ accent = '#00ff87', size = 22 }) {
   return (
-    <IconShell accent={accent} size={size}>
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={accent} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="7" r="3"/>
-        <path d="M6 20c0-3 2.5-5 6-5s6 2 6 5"/>
-        <path d="M6 11l4 2 4-2"/>
-      </svg>
-    </IconShell>
+    <Svg accent={accent} size={size}>
+      <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+      <circle cx="12" cy="7" r="4"/>
+    </Svg>
   )
 }
 
-export function TurfIcon({ accent = '#4488ff', size = 44 }) {
+export function TurfIcon({ accent = '#4488ff', size = 22 }) {
   return (
-    <IconShell accent={accent} size={size}>
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={accent} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="3" y="8" width="18" height="12" rx="2"/>
-        <path d="M6 8V5h12v3"/>
-      </svg>
-    </IconShell>
+    <Svg accent={accent} size={size}>
+      <rect x="2" y="7" width="20" height="14" rx="2"/>
+      <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>
+      <line x1="12" y1="12" x2="12" y2="16"/>
+      <line x1="10" y1="14" x2="14" y2="14"/>
+    </Svg>
   )
 }
 
-export function InvestorsIcon({ accent = '#ffaa00', size = 44 }) {
+export function InvestorsIcon({ accent = '#ffaa00', size = 22 }) {
   return (
-    <IconShell accent={accent} size={size}>
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={accent} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M4 18h16M4 14h10M4 10h7M4 6h4"/>
-        <circle cx="18" cy="6" r="2"/>
-      </svg>
-    </IconShell>
+    <Svg accent={accent} size={size}>
+      <line x1="12" y1="1" x2="12" y2="23"/>
+      <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
+    </Svg>
   )
 }
 
-export function TeamIcon({ accent = '#ffffff', size = 44 }) {
+export function TeamIcon({ accent = '#cc88ff', size = 22 }) {
   return (
-    <IconShell accent={accent} size={size}>
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={accent} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="8" r="3"/>
-        <path d="M6 20v-1a4 4 0 0 1 8 0v1"/>
-        <path d="M2 15a4 4 0 0 1 8 0"/>
-      </svg>
-    </IconShell>
+    <Svg accent={accent} size={size}>
+      <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+      <circle cx="9" cy="7" r="4"/>
+      <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+      <path d="M16 3.13a4 4 0 010 7.75"/>
+    </Svg>
   )
 }
 
 export function CheckmarkIcon({ accent = '#00ff87', size = 20 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={accent} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M5 13l4 4L19 7"/>
+      <polyline points="20 6 9 17 4 12"/>
     </svg>
   )
 }
 
-export function ImageIcon({ accent = '#4488ff', size = 44 }) {
+/* Admin panel icons */
+export function ImageIcon({ accent = '#4488ff', size = 22 }) {
   return (
-    <IconShell accent={accent} size={size}>
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={accent} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-        <circle cx="9" cy="9" r="2"/>
-        <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
-      </svg>
-    </IconShell>
+    <Svg accent={accent} size={size}>
+      <rect x="3" y="3" width="18" height="18" rx="2"/>
+      <circle cx="8.5" cy="8.5" r="1.5"/>
+      <polyline points="21 15 16 10 5 21"/>
+    </Svg>
   )
 }
 
-export function UsersIcon({ accent = '#ffaa00', size = 44 }) {
+export function UsersIcon({ accent = '#ffaa00', size = 22 }) {
   return (
-    <IconShell accent={accent} size={size}>
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={accent} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-        <circle cx="9" cy="7" r="4"/>
-        <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
-        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-      </svg>
-    </IconShell>
+    <Svg accent={accent} size={size}>
+      <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+      <circle cx="9" cy="7" r="4"/>
+      <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+      <path d="M16 3.13a4 4 0 010 7.75"/>
+    </Svg>
   )
 }
 
-export function FolderIcon({ accent = '#00ff87', size = 44 }) {
+export function FolderIcon({ accent = '#00ff87', size = 22 }) {
   return (
-    <IconShell accent={accent} size={size}>
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={accent} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/>
-      </svg>
-    </IconShell>
+    <Svg accent={accent} size={size}>
+      <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>
+    </Svg>
   )
 }
 
-export function LabelIcon({ accent = '#ffffff', size = 44 }) {
+export function LabelIcon({ accent = '#ffffff', size = 22 }) {
   return (
-    <IconShell accent={accent} size={size}>
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={accent} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/>
-        <path d="M7 7h.01"/>
-      </svg>
-    </IconShell>
+    <Svg accent={accent} size={size}>
+      <path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/>
+      <line x1="7" y1="7" x2="7.01" y2="7"/>
+    </Svg>
   )
 }

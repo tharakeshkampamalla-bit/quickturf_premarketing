@@ -5,7 +5,7 @@ const leadSchema = new mongoose.Schema({
   email: { type: String, required: true, trim: true, lowercase: true },
   phone: { type: String, required: true, trim: true },
   city: { type: String, required: true, trim: true },
-  role: { type: String, required: true, enum: ['Player', 'Turf Owner', 'Investor', 'Collaborator'] },
+  role: { type: String, required: true, enum: ['Player', 'Turf Owner', 'Collaborator'] },
   turfName: { type: String, trim: true },
   location: { type: String, trim: true },
   investmentInterest: { type: String, trim: true },

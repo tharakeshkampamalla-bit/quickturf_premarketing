@@ -3,6 +3,9 @@ import { useEffect, useRef } from 'react'
 import Home from './pages/Home'
 import Join from './pages/Join'
 import Admin from './pages/Admin'
+import About from './pages/About'
+import PrivacyPolicy from './pages/PrivacyPolicy'
+import TermsOfUse from './pages/TermsOfUse'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 
@@ -51,6 +54,9 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/join" element={<Join />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/terms" element={<TermsOfUse />} />
       </Routes>
       <Footer />
     </div>

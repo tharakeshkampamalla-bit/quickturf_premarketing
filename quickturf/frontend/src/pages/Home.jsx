@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import axios from 'axios'
+import api from '../api'
 
-import { SearchIcon, BookIcon, PlayIcon, PlayerIcon, TurfIcon, InvestorsIcon, CheckmarkIcon } from '../components/IndustryIcons'
+import { SearchIcon, BookIcon, PlayIcon, PlayerIcon, TurfIcon, CheckmarkIcon } from '../components/IndustryIcons'
+
+import partner1 from "../assets/1.svg";
+import partner2 from "../assets/2.svg";
 
 /* ── ICON COMPONENTS ────────────────────────────── */
 // Shared icons are provided by IndustryIcons.jsx
@@ -129,7 +132,7 @@ function Hero({ logo }) {
   useEffect(() => { const t = setTimeout(() => setMounted(true), 80); return () => clearTimeout(t) }, [])
 
   return (
-    <section style={{ position: 'relative', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', background: 'var(--c-bg)', paddingTop: 80 }}>
+    <section style={{ position: 'relative', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', overflow: 'hidden', background: 'var(--c-bg)', paddingTop: 140 }}>
       <ParticleField />
       <div style={{ position: 'absolute', top: '35%', left: '50%', transform: 'translate(-50%,-50%)', width: 720, height: 720, borderRadius: '50%', background: 'radial-gradient(circle, rgba(0,255,135,0.065) 0%, transparent 65%)', pointerEvents: 'none', zIndex: 0 }} />
       <div style={{ position: 'absolute', top: 88, left: 36, width: 64, height: 64, borderLeft: '1px solid rgba(0,255,135,0.18)', borderTop: '1px solid rgba(0,255,135,0.18)', zIndex: 2 }} />
@@ -147,15 +150,14 @@ function Hero({ logo }) {
           </div>
         </div>
 
-        <h1 style={{ fontFamily: 'Outfit', fontWeight: 800, fontSize: 'clamp(3.8rem, 10vw, 8.5rem)', lineHeight: 0.88, letterSpacing: '-0.04em', marginBottom: 36, opacity: mounted ? 1 : 0, transform: mounted ? 'translateY(0)' : 'translateY(40px)', transition: 'all 0.8s cubic-bezier(0.22,1,0.36,1) 0.15s' }}>
-          <span style={{ display: 'block', color: 'var(--c-text)' }}>Find.</span>
-          <span style={{ display: 'block', color: 'var(--c-green)', textShadow: '0 0 80px rgba(0,255,135,0.4)' }}>Book.</span>
-          <span style={{ display: 'block', color: 'var(--c-text)' }}>Play.</span>
+        <h1 style={{ fontFamily: 'Outfit', fontWeight: 800, fontSize: 'clamp(3.8rem, 10vw, 5.5rem)', lineHeight: 0.88, letterSpacing: '-0.04em', marginBottom: 36, opacity: mounted ? 1 : 0, transform: mounted ? 'translateY(0)' : 'translateY(40px)', transition: 'all 0.8s cubic-bezier(0.22,1,0.36,1) 0.15s' }}>
+          <span style={{ display: 'block', color: 'var(--c-text)' }}>No more calls.</span>
+          <span style={{ display: 'block', color: 'var(--c-green)', textShadow: '0 0 80px rgba(0,255,135,0.4)' }}>One simple tap.</span>
+          <span style={{ display: 'block', color: 'var(--c-text)' }}>Play begins.</span>
         </h1>
 
         <p style={{ fontFamily: 'Outfit', fontWeight: 400, fontSize: 'clamp(1rem, 2.2vw, 1.2rem)', color: 'rgba(240,240,240,0.48)', lineHeight: 1.75, maxWidth: 540, margin: '0 auto 52px', letterSpacing: '0.01em', opacity: mounted ? 1 : 0, transform: mounted ? 'translateY(0)' : 'translateY(24px)', transition: 'all 0.7s cubic-bezier(0.22,1,0.36,1) 0.32s' }}>
-          QuickTurf powered by Solvify Technologies is India's instant sports turf booking platform.
-          Real-time slot visibility. Zero calls. One tap to play.
+          QuickTurf — Instant turf booking in India. Live slots. No calls. Tap & play.
         </p>
 
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center', marginBottom: 76, opacity: mounted ? 1 : 0, transform: mounted ? 'translateY(0)' : 'translateY(20px)', transition: 'all 0.7s cubic-bezier(0.22,1,0.36,1) 0.48s' }}>
@@ -166,11 +168,6 @@ function Hero({ logo }) {
             Join as Player
           </Link>
           <Link to="/join?role=Turf+Owner" className="btn-ghost" style={{ textDecoration: 'none' }}>List Your Turf</Link>
-          <Link to="/join?role=Investor" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 24px', fontFamily: 'Outfit', fontWeight: 600, fontSize: '0.88rem', color: 'rgba(0,255,135,0.65)', border: '1px solid rgba(0,255,135,0.18)', borderRadius: 6, transition: 'all 0.2s', letterSpacing: '0.01em' }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(0,255,135,0.45)'; e.currentTarget.style.color = 'var(--c-green)' }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(0,255,135,0.18)'; e.currentTarget.style.color = 'rgba(0,255,135,0.65)' }}>
-            Partner With Us ↗
-          </Link>
         </div>
 
         <div style={{ display: 'flex', justifyContent: 'center', gap: 0, borderTop: '1px solid rgba(255,255,255,0.07)', paddingTop: 44, opacity: mounted ? 1 : 0, transition: 'opacity 0.8s ease 0.65s' }}>
@@ -197,10 +194,42 @@ function Hero({ logo }) {
 function Problem() {
   const [ref, inView] = useInView()
   const cards = [
-    { icon: '📞', title: 'Endless Calls', body: 'Call one turf — busy. Call another — no answer. Waste 30 minutes before finding a free slot.', tag: 'TIME WASTED', tagColor: '#ff4444' },
-    { icon: '🔭', title: 'Zero Visibility', body: 'There is no way to check what slots are available before calling. Every booking starts in the dark.', tag: 'NO TRANSPARENCY', tagColor: '#ff8844' },
-    { icon: '💥', title: 'Double Bookings', body: 'Manual bookings cause miscommunications, slot overlaps, and disputes when groups show up together.', tag: 'POOR SYSTEM', tagColor: '#ffaa00' },
-    { icon: '📉', title: 'Owner Revenue Loss', body: 'Turfs miss bookings because owners are unreachable. Every missed call is income permanently lost.', tag: 'BUSINESS PAIN', tagColor: '#ff6688' },
+    {
+      icon: (
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ff4444" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8a19.79 19.79 0 01-3.07-8.68A2 2 0 012 0h3a2 2 0 012 1.72 12.9 12.9 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.9 12.9 0 002.81.7A2 2 0 0122 14.92z"/>
+        </svg>
+      ),
+      title: 'Endless Calls', body: 'Call one turf — busy. Call another — no answer. Waste 30 minutes before finding a free slot.', tag: 'TIME WASTED', tagColor: '#ff4444'
+    },
+    {
+      icon: (
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ff8844" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+      ),
+      title: 'Zero Visibility', body: 'There is no way to check what slots are available before calling. Every booking starts in the dark.', tag: 'NO TRANSPARENCY', tagColor: '#ff8844'
+    },
+    {
+      icon: (
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffaa00" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+      ),
+      title: 'Double Bookings', body: 'Manual bookings cause miscommunications, slot overlaps, and disputes when groups show up together.', tag: 'POOR SYSTEM', tagColor: '#ffaa00'
+    },
+    {
+      icon: (
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ff6688" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+        </svg>
+      ),
+      title: 'Owner Revenue Loss', body: 'Turfs miss bookings because owners are unreachable. Every missed call is income permanently lost.', tag: 'BUSINESS PAIN', tagColor: '#ff6688'
+    },
   ]
   return (
     <section style={{ padding: '120px 28px', background: 'var(--c-bg)', position: 'relative' }}>
@@ -220,7 +249,7 @@ function Problem() {
               onMouseMove={e => { const r = e.currentTarget.getBoundingClientRect(); e.currentTarget.style.setProperty('--mouse-x', `${e.clientX - r.left}px`); e.currentTarget.style.setProperty('--mouse-y', `${e.clientY - r.top}px`) }}>
               <div style={{ position: 'relative', zIndex: 1 }}>
                 <span style={{ fontFamily: 'JetBrains Mono', fontSize: '0.58rem', color: c.tagColor, letterSpacing: '0.12em', border: `1px solid ${c.tagColor}30`, padding: '3px 8px', borderRadius: 3, display: 'inline-block', marginBottom: 28 }}>{c.tag}</span>
-                <div style={{ fontSize: '2.4rem', marginBottom: 18 }}>{c.icon}</div>
+                <div style={{ width: 48, height: 48, borderRadius: 10, background: `${c.tagColor}12`, border: `1px solid ${c.tagColor}28`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24 }}>{c.icon}</div>
                 <h3 style={{ fontFamily: 'Outfit', fontWeight: 700, fontSize: '1.15rem', color: 'var(--c-text)', marginBottom: 12, letterSpacing: '-0.01em' }}>{c.title}</h3>
                 <p style={{ fontFamily: 'Outfit', fontSize: '0.88rem', color: 'rgba(240,240,240,0.42)', lineHeight: 1.72 }}>{c.body}</p>
               </div>
@@ -343,8 +372,8 @@ function HowItWorks() {
                 <span style={{ fontFamily: 'JetBrains Mono', fontSize: '0.72rem', color: s.accent, fontWeight: 700 }}>{s.n}</span>
                 <div style={{ position: 'absolute', inset: -5, borderRadius: '50%', border: `1px solid ${s.accent}20`, animation: `pulse-ring 2.5s ease-out ${i * 0.5}s infinite` }} />
               </div>
-              <div style={{ marginBottom: 16, position: 'relative', zIndex: 2 }}>
-                <s.icon accent={s.accent} />
+              <div style={{ width: 48, height: 48, borderRadius: 12, background: `${s.accent}12`, border: `1px solid ${s.accent}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24, position: 'relative', zIndex: 2 }}>
+                <s.icon accent={s.accent} size={22} />
               </div>
               <h3 style={{ fontFamily: 'Outfit', fontWeight: 800, fontSize: '2.2rem', letterSpacing: '-0.035em', color: s.accent, marginBottom: 16, position: 'relative', zIndex: 2 }}>{s.title}</h3>
               <p style={{ fontFamily: 'Outfit', fontSize: '0.88rem', color: 'rgba(240,240,240,0.42)', lineHeight: 1.75, position: 'relative', zIndex: 2 }}>{s.desc}</p>
@@ -364,7 +393,6 @@ function Audiences() {
   const items = [
     { role: 'Players', icon: PlayerIcon, headline: 'Stop calling.\nStart playing.', body: 'QuickTurf gives you full visibility into turf availability. Browse, select, and book from your phone in seconds.', features: ['Browse turfs by sport & location', 'Live slot availability 24/7', 'Book & pay in under 60 seconds', 'Instant digital confirmation', 'All your bookings in one place'], cta: 'Join as Player', to: '/join?role=Player', accent: '#00ff87' },
     { role: 'Turf Owners', icon: TurfIcon, headline: 'Fill every slot.\nEffortlessly.', body: 'List your turf once and let QuickTurf handle the rest. Automated bookings, instant payments, zero admin overhead.', features: ['List your turf in minutes', 'Automated booking calendar', 'Instant payout on booking', 'No-show protection built-in', 'Analytics & revenue dashboard'], cta: 'List Your Turf', to: '/join?role=Turf+Owner', accent: '#4488ff' },
-    { role: 'Investors', icon: InvestorsIcon, headline: "A massive market,\ntotally untapped.", body: "India's sports infrastructure is enormous but almost entirely offline. QuickTurf is the digital layer that changes everything.", features: ['50,000+ turfs across India', 'Under 5% currently digitised', '₹8,000 Cr+ annual market', 'Pre-launch traction & waitlist', 'SaaS + marketplace revenue model'], cta: 'Partner With Us', to: '/join?role=Investor', accent: '#ffaa00' },
   ]
   const a = items[active]
   return (
@@ -378,14 +406,14 @@ function Audiences() {
           <div style={{ display: 'flex', borderBottom: '1px solid rgba(255,255,255,0.07)', background: 'rgba(255,255,255,0.02)' }}>
             {items.map((item, i) => (
               <button key={i} onClick={() => setActive(i)} style={{ flex: 1, padding: '18px 24px', fontFamily: 'Outfit', fontWeight: 600, fontSize: '0.88rem', background: active === i ? 'rgba(255,255,255,0.04)' : 'transparent', color: active === i ? item.accent : 'rgba(240,240,240,0.38)', border: 'none', borderBottom: active === i ? `2px solid ${item.accent}` : '2px solid transparent', marginBottom: -1, cursor: 'none', transition: 'all 0.25s', display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'center', letterSpacing: '0.01em' }}>
-                <item.icon accent={active === i ? item.accent : 'rgba(240,240,240,0.38)'} /><span>{item.role}</span>
+                <item.icon accent={active === i ? item.accent : 'rgba(240,240,240,0.3)'} size={18} /><span>{item.role}</span>
               </button>
             ))}
           </div>
           <div key={active} className="animate-fade-in" style={{ padding: '56px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'center' }}>
             <div>
-              <div style={{ marginBottom: 24, width: 48, height: 48 }}>
-                <a.icon accent={a.accent} />
+              <div style={{ marginBottom: 28, width: 52, height: 52, borderRadius: 14, background: `${a.accent}12`, border: `1px solid ${a.accent}30`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <a.icon accent={a.accent} size={24} />
               </div>
               <h3 style={{ fontFamily: 'Outfit', fontWeight: 800, fontSize: 'clamp(1.8rem,3.5vw,2.8rem)', letterSpacing: '-0.03em', color: 'var(--c-text)', lineHeight: 1.05, marginBottom: 20, whiteSpace: 'pre-line' }}>{a.headline}</h3>
               <p style={{ fontFamily: 'Outfit', fontSize: '0.95rem', color: 'rgba(240,240,240,0.44)', lineHeight: 1.75, marginBottom: 36 }}>{a.body}</p>
@@ -411,33 +439,23 @@ function Audiences() {
 
 /* ── PARTNERS ────────────────────────────────── */
 function Partners({ logos }) {
-  const names = ['Sports Arena', 'PlayZone Pro', 'TurfMaster', 'AthletiX', 'SportsPlex', 'GameGround', 'ProTurf', 'FieldFirst', 'Urban Turf', 'Elite Grounds', 'SportSync', 'TurfHub', 'PlayField', 'ArenaMax', 'TurfZone']
-  const defaultLogos = [
-    `<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="20" r="18" fill="#00ff87" stroke="#000" stroke-width="2"/><text x="20" y="25" text-anchor="middle" fill="#000" font-size="12" font-family="Arial">SA</text></svg>`,
-    `<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="36" height="36" rx="8" fill="#00ff87" stroke="#000" stroke-width="2"/><text x="20" y="25" text-anchor="middle" fill="#000" font-size="10" font-family="Arial">PPP</text></svg>`,
-    `<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="20,2 38,20 20,38 2,20" fill="#00ff87" stroke="#000" stroke-width="2"/><text x="20" y="25" text-anchor="middle" fill="#000" font-size="10" font-family="Arial">TM</text></svg>`,
-    `<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><ellipse cx="20" cy="20" rx="18" ry="12" fill="#00ff87" stroke="#000" stroke-width="2"/><text x="20" y="25" text-anchor="middle" fill="#000" font-size="10" font-family="Arial">AX</text></svg>`,
-    `<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="20" r="18" fill="#00ff87" stroke="#000" stroke-width="2"/><text x="20" y="25" text-anchor="middle" fill="#000" font-size="10" font-family="Arial">SP</text></svg>`,
-    `<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="36" height="36" rx="4" fill="#00ff87" stroke="#000" stroke-width="2"/><text x="20" y="25" text-anchor="middle" fill="#000" font-size="10" font-family="Arial">GG</text></svg>`,
-    `<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="20,2 38,20 20,38 2,20" fill="#00ff87" stroke="#000" stroke-width="2"/><text x="20" y="25" text-anchor="middle" fill="#000" font-size="10" font-family="Arial">PT</text></svg>`,
-    `<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><ellipse cx="20" cy="20" rx="18" ry="12" fill="#00ff87" stroke="#000" stroke-width="2"/><text x="20" y="25" text-anchor="middle" fill="#000" font-size="10" font-family="Arial">FF</text></svg>`
-  ]
+  const staticLogos = [partner1, partner2]
   return (
     <>
       <Ticker />
       <section style={{ padding: '100px 28px', background: 'var(--c-surface)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ fontFamily: 'JetBrains Mono', fontSize: '0.62rem', color: 'rgba(255,255,255,0.22)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 32 }}>Partners & Early Supporters</p>
+          <div className="section-label" style={{ justifyContent: 'center', marginBottom: 20 }}>Partners & Early Supporters</div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center' }}>
-            {logos.length > 0 ? logos.map((l, i) => (
-              <img key={i} src={l.imageUrl} alt="Partner" style={{ height: 40, objectFit: 'contain', opacity: 0.35, filter: 'grayscale(100%)', transition: 'all 0.3s' }}
+            {staticLogos.map((src, i) => (
+              <img key={`static-${i}`} src={src} alt="Partner" style={{ height: 200, objectFit: 'contain', opacity: 0.35, filter: 'grayscale(100%)', transition: 'all 0.3s' }}
                 onMouseEnter={e => { e.target.style.opacity = 1; e.target.style.filter = 'none' }}
                 onMouseLeave={e => { e.target.style.opacity = 0.35; e.target.style.filter = 'grayscale(100%)' }} />
-            )) : defaultLogos.map((svg, i) => (
-              <div key={i} style={{ height: 40, width: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 6, opacity: 0.35, filter: 'grayscale(100%)', transition: 'all 0.3s' }}
-                onMouseEnter={e => { e.currentTarget.style.opacity = 1; e.currentTarget.style.filter = 'none' }}
-                onMouseLeave={e => { e.currentTarget.style.opacity = 0.35; e.currentTarget.style.filter = 'grayscale(100%)' }}
-                dangerouslySetInnerHTML={{ __html: svg }} />
+            ))}
+            {logos.map((l, i) => (
+              <img key={`api-${i}`} src={l.imageUrl} alt="Partner" style={{ height: 40, objectFit: 'contain', opacity: 0.35, filter: 'grayscale(100%)', transition: 'all 0.3s' }}
+                onMouseEnter={e => { e.target.style.opacity = 1; e.target.style.filter = 'none' }}
+                onMouseLeave={e => { e.target.style.opacity = 0.35; e.target.style.filter = 'grayscale(100%)' }} />
             ))}
           </div>
         </div>
@@ -489,8 +507,8 @@ export default function Home() {
     const load = async () => {
       try {
         const [p, l] = await Promise.all([
-          axios.get('/api/images?type=partner'),
-          axios.get('/api/images?type=logo'),
+          api.get('/api/images?type=partner'),
+          api.get('/api/images?type=logo'),
         ])
         setPartnerLogos(p.data.data || [])
         if (l.data.data?.[0]) setLogo(l.data.data[0].imageUrl)

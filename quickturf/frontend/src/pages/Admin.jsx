@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
-import axios from 'axios'
-import { TeamIcon, PlayerIcon, TurfIcon, InvestorsIcon, ImageIcon, UsersIcon, FolderIcon, LabelIcon } from '../components/IndustryIcons'
+import api from '../api'
+import { TeamIcon, PlayerIcon, TurfIcon, ImageIcon, UsersIcon, FolderIcon, LabelIcon } from '../components/IndustryIcons'
 
 /* ── ICON COMPONENTS ────────────────────────────── */
 // Icons are imported from IndustryIcons for consistent visual style
@@ -16,7 +16,7 @@ function AdminLogin({ onLogin }) {
     setLoading(true)
     setError('')
     try {
-      const res = await axios.post('/api/auth/login', { password })
+      const res = await api.post('/api/auth/login', { password })
       if (res.data.success) {
         localStorage.setItem('qt_admin', 'true')
         onLogin()
@@ -75,9 +75,8 @@ function LeadsTable({ leads, onDelete }) {
   })
 
   const roleBadge = {
-    'Player': 'bg-green-500/15 text-green-400 border-green-500/30',
-    'Turf Owner': 'bg-blue-500/15 text-blue-400 border-blue-500/30',
-    'Investor': 'bg-purple-500/15 text-purple-400 border-purple-500/30',
+    'Player':       'bg-green-500/15 text-green-400 border-green-500/30',
+    'Turf Owner':   'bg-blue-500/15 text-blue-400 border-blue-500/30',
     'Collaborator': 'bg-yellow-500/15 text-yellow-400 border-yellow-500/30',
   }
 
@@ -90,7 +89,7 @@ function LeadsTable({ leads, onDelete }) {
           className="flex-1 bg-white/5 border border-white/15 focus:border-green-500 text-white placeholder-white/30 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green-500/20 transition-all" />
         <select value={filterRole} onChange={e => setFilterRole(e.target.value)}
           className="bg-white/5 border border-white/15 text-white rounded-xl px-4 py-2.5 text-sm outline-none focus:border-green-500 transition-all">
-          {['All', 'Player', 'Turf Owner', 'Investor', 'Collaborator'].map(r => (
+          {['All', 'Player', 'Turf Owner', 'Collaborator'].map(r => (
             <option key={r} value={r} className="bg-gray-900">{r}</option>
           ))}
         </select>
@@ -98,7 +97,7 @@ function LeadsTable({ leads, onDelete }) {
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-        {['Player', 'Turf Owner', 'Investor', 'Collaborator'].map(role => (
+        {['Player', 'Turf Owner', 'Collaborator'].map(role => (
           <div key={role} className="bg-white/5 border border-white/10 rounded-xl p-3 text-center">
             <div className="font-display font-black text-2xl text-white">
               {leads.filter(l => l.role === role).length}
@@ -295,7 +294,7 @@ export default function Admin() {
   const fetchLeads = async () => {
     setLoading(true)
     try {
-      const res = await axios.get('/api/leads')
+      const res = await api.get('/api/leads')
       setLeads(res.data.data || [])
     } catch (e) {
       console.error('Failed to fetch leads:', e)
@@ -306,7 +305,7 @@ export default function Admin() {
 
   const fetchImages = async () => {
     try {
-      const res = await axios.get('/api/images')
+      const res = await api.get('/api/images')
       setImages(res.data.data || [])
     } catch (e) {
       console.error('Failed to fetch images:', e)
@@ -316,7 +315,7 @@ export default function Admin() {
   const deleteLead = async id => {
     if (!confirm('Delete this lead?')) return
     try {
-      await axios.delete(`/api/leads/${id}`)
+      await api.delete(`/api/leads/${id}`)
       setLeads(l => l.filter(x => x._id !== id))
     } catch (e) {
       alert('Failed to delete')
@@ -325,7 +324,7 @@ export default function Admin() {
 
   const uploadImage = async (formData) => {
     try {
-      const res = await axios.post('/api/upload', formData, {
+      const res = await api.post('/api/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
       if (res.data.data) setImages(prev => [res.data.data, ...prev])
@@ -337,7 +336,7 @@ export default function Admin() {
   const deleteImage = async id => {
     if (!confirm('Delete this image?')) return
     try {
-      await axios.delete(`/api/images/${id}`)
+      await api.delete(`/api/images/${id}`)
       setImages(imgs => imgs.filter(i => i._id !== id))
     } catch (e) {
       alert('Failed to delete image')
@@ -413,7 +412,7 @@ export default function Admin() {
             { label: 'Total Leads', value: leads.length, icon: UsersIcon, color: 'text-white' },
             { label: 'Players', value: leads.filter(l => l.role === 'Player').length, icon: PlayerIcon, color: 'text-green-400' },
             { label: 'Turf Owners', value: leads.filter(l => l.role === 'Turf Owner').length, icon: TurfIcon, color: 'text-blue-400' },
-            { label: 'Investors', value: leads.filter(l => l.role === 'Investor').length, icon: InvestorsIcon, color: 'text-purple-400' },
+            { label: 'Collaborators', value: leads.filter(l => l.role === 'Collaborator').length, icon: TeamIcon, color: 'text-yellow-400' },
           ].map(card => (
             <div key={card.label} className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:border-white/20 transition-colors">
               <div className="text-2xl mb-2"><card.icon /></div>
