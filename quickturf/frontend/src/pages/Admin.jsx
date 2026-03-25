@@ -55,7 +55,6 @@ function AdminLogin({ onLogin }) {
             {loading ? 'Logging in...' : 'Login to Admin Panel'}
           </button>
         </form>
-        <p className="text-center text-white/20 text-xs mt-4">Default password: <code className="text-white/40">quickturf_admin_2024</code></p>
       </div>
     </div>
   )
