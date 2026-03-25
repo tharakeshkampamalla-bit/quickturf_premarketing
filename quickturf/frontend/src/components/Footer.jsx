@@ -24,7 +24,8 @@ export default function Footer() {
           {[
             { title: 'Company', links: [
               { label: 'About Us', href: '/about' },
-              { label: 'Contact', href: '/join' }
+              { label: 'Contact', href: '/join' },
+              { label: 'Email', href: 'mailto:solvifytechpvtltd@gmail.com' }
             ]},
             { title: 'Legal', links: [
               { label: 'Privacy Policy', href: '/privacy' },
