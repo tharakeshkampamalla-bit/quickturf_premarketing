@@ -51,11 +51,48 @@ export default function Join() {
 
   const handleChange = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }))
 
+  const validateForm = () => {
+    const name = form.name.trim()
+    const email = form.email.trim().toLowerCase()
+    const phone = form.phone.replace(/\D/g, '')
+    const city = form.city.trim()
+    const turfName = form.turfName.trim()
+    const location = form.location.trim()
+
+    if (name.length < 2) return 'Please enter your full name (at least 2 characters).'
+    if (!/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(email)) return 'Email must end with @gmail.com.'
+    if (!/^\d{10}$/.test(phone)) return 'Mobile number must be exactly 10 digits.'
+    if (city.length < 2) return 'City is required.'
+    if (!ROLES.includes(form.role)) return 'Please select a valid role.'
+    if (form.role === 'Turf Owner') {
+      if (!turfName) return 'Turf name is required for turf owners.'
+      if (!location) return 'Turf location is required for turf owners.'
+    }
+    return null
+  }
+
   const handleSubmit = async e => {
     e.preventDefault()
+    const validationError = validateForm()
+    if (validationError) {
+      setStatus('error')
+      setErrorMsg(validationError)
+      return
+    }
+
     setStatus('loading'); setErrorMsg('')
+    const payload = {
+      ...form,
+      name: form.name.trim(),
+      email: form.email.trim().toLowerCase(),
+      phone: form.phone.replace(/\D/g, ''),
+      city: form.city.trim(),
+      turfName: form.turfName.trim(),
+      location: form.location.trim()
+    }
+
     try {
-      await api.post('/api/leads', form)
+      await api.post('/api/leads', payload)
       setStatus('success')
     } catch (err) {
       setStatus('error')
